@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What2Do</title>
+    <script src="./main.js" defer></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <div class="header">
+        <h1>What2Do</h1>
+    </div>
+    <div class="main">
+        <div class="sidebar">
+                <div class='nav' id="inbox"><svg xmlns="http://www.w3.org/2000/svg" height="24" width="24"><path d="M5 21Q4.175 21 3.587 20.413Q3 19.825 3 19V5Q3 4.175 3.587 3.587Q4.175 3 5 3H19Q19.825 3 20.413 3.587Q21 4.175 21 5V19Q21 19.825 20.413 20.413Q19.825 21 19 21ZM12 16Q12.975 16 13.738 15.438Q14.5 14.875 14.8 14H19V5Q19 5 19 5Q19 5 19 5H5Q5 5 5 5Q5 5 5 5V14H9.2Q9.5 14.875 10.262 15.438Q11.025 16 12 16Z"/></svg>
+                    <span>Inbox</span></div>
+                <div class='nav' id="today"><svg xmlns="http://www.w3.org/2000/svg" height="24" width="24"><path d="M9 16.5Q7.95 16.5 7.225 15.775Q6.5 15.05 6.5 14Q6.5 12.95 7.225 12.225Q7.95 11.5 9 11.5Q10.05 11.5 10.775 12.225Q11.5 12.95 11.5 14Q11.5 15.05 10.775 15.775Q10.05 16.5 9 16.5ZM5 22Q4.175 22 3.587 21.413Q3 20.825 3 20V6Q3 5.175 3.587 4.588Q4.175 4 5 4H6V2H8V4H16V2H18V4H19Q19.825 4 20.413 4.588Q21 5.175 21 6V20Q21 20.825 20.413 21.413Q19.825 22 19 22ZM5 20H19Q19 20 19 20Q19 20 19 20V10H5V20Q5 20 5 20Q5 20 5 20Z"/></svg>
+                    <span>Today</span></div>
+                <div class='nav' id="upcoming"><svg xmlns="http://www.w3.org/2000/svg" height="24" width="24"><path d="M17.6 10.8 16.2 9.4 19.75 5.85 21.15 7.25ZM11 8V3H13V8ZM6.4 10.8 2.85 7.25 4.25 5.85 7.8 9.4ZM4 21Q3.175 21 2.588 20.413Q2 19.825 2 19V14Q2 13.175 2.588 12.587Q3.175 12 4 12H9Q9 13.25 9.875 14.125Q10.75 15 12 15Q13.25 15 14.125 14.125Q15 13.25 15 12H20Q20.825 12 21.413 12.587Q22 13.175 22 14V19Q22 19.825 21.413 20.413Q20.825 21 20 21Z"/></svg>
+                    <span>Upcoming</span></div>
+                <h1>Projects</h1>
+                <div class="project-list">
+                    <div class="project"><div class="bullet"></div><span>School Work</span><svg xmlns="http://www.w3.org/2000/svg" height="20" width="20"><path d="M5.375 15.562 4.438 14.625 9.062 10 4.438 5.375 5.375 4.438 10 9.062 14.625 4.438 15.562 5.375 10.938 10 15.562 14.625 14.625 15.562 10 10.938Z"/></svg></div>
+                    <div class="project"><div class="bullet"></div><span>Errands
+                    </span><svg xmlns="http://www.w3.org/2000/svg" height="20" width="20"><path d="M5.375 15.562 4.438 14.625 9.062 10 4.438 5.375 5.375 4.438 10 9.062 14.625 4.438 15.562 5.375 10.938 10 15.562 14.625 14.625 15.562 10 10.938Z"/></svg></div>
+                </div>
+        </div>
+        <div class="content">
+            <h1 id="current">Inbox</h1>
+            <div id="task-display"></div>
+            <div id="add-task">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24" width="24"><path d="M11 19V13H5V11H11V5H13V11H19V13H13V19Z"/></svg>
+                <p>Add task</p>
+            </div>
+        </div>
+    </div>
+    
+</body>
+</html>
