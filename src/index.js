@@ -12,3 +12,5 @@ taskController.createTask('Task 2','Do homework','12/11/2003', 3, 'Home');
 console.log(taskController.allTasks);
 taskController.deleteTask('Task 4');
 console.log(taskController.allTasks);
+
+displayController.setUpTaskForm();
