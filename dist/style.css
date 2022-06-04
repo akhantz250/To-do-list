@@ -237,8 +237,8 @@
     top: 50%;
     transform: translate(0, -50%);
 }
-.task-check:hover,.task-selected{
-    background-color: var(--green-200);
+.task-check:hover{
+    background-color: var(--gray600);;
 }
 .task-row{
     display: flex;
@@ -261,6 +261,7 @@
     
 }
 .task-description{
+    min-height: 14px;
     display: block;
     font-size: 12px;
     margin-top: 0.25rem;
@@ -297,4 +298,18 @@
 }
 .p3{
     border-left: 5px solid red;
+}
+
+.complete .task-info .task-title{
+    text-decoration: line-through;
+}
+.complete{
+    border-color: black;
+}
+
+.complete .task-check{
+    background-color: var(--gray600);
+}
+.complete .task-check:hover{
+    background-color: transparent;
 }

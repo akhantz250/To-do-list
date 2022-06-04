@@ -18,7 +18,8 @@
   },
   "homepage": "https://github.com/akhantz250/odin-to-do-list#readme",
   "dependencies": {
-    "date-fns": "^2.28.0"
+    "date-fns": "^2.28.0",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "webpack": "^5.73.0",

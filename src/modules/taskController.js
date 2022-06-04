@@ -14,10 +14,11 @@ const taskController = (function(){
     function createTask(title, description, dueDate, priority, project){
         const newTask = taskFactory(title, description, dueDate, priority, project);
         allTasks.push(newTask);
+        return newTask;
     }
-    function deleteTask(taskName){
+    function deleteTask(taskID){
         for(let i=0;i<allTasks.length;i++){
-            if(allTasks[i].getTitle() === taskName){
+            if(allTasks[i].getTaskID() === taskID){
                 allTasks.splice(i,1);
                 console.log('deleted');
                 return;
@@ -42,6 +43,9 @@ const taskController = (function(){
         if(allTasks.includes(projectName)){
             return false;
         }else return true;
+    }
+    function loadTask(){
+
     }
 
 

@@ -32,11 +32,9 @@ const displayController = (function(){
         const formElement = document.querySelector('#new-task')
         taskNameInput.addEventListener('input', (e) =>{
             if(taskNameInput.value.length !== 0){
-                console.log(taskNameInput.value.length);
                 addTaskBtn.removeAttribute('disabled');
             }else{
                 addTaskBtn.setAttribute('disabled','');
-                console.log('disabled')
             } 
         });
 
@@ -49,8 +47,8 @@ const displayController = (function(){
             const dueDate = form.elements['due-date'].value;
             const priority = form.elements['priority'].value;
             console.log(title, description, dueDate, priority);
-            taskController.createTask(title, description, dueDate, priority, currentBox);
-            _createNewTask(title, description, dueDate, priority);
+            const task = taskController.createTask(title, description, dueDate, priority, currentBox);
+            _createNewTask(title, description, dueDate, priority, task);
             console.log(taskController.allTasks);
             setUpAddTask();
             form.reset();
@@ -72,7 +70,7 @@ const displayController = (function(){
          
     }
 
-    function _createNewTask(title, description, dueDate, priority){
+    function _createNewTask(title, description, dueDate, priority, task){
         const targetElement = document.querySelector('.task-target')
 
         const newTaskRow = document.createElement('div');
@@ -91,6 +89,11 @@ const displayController = (function(){
         newDueDate.classList.add('task-due-date');
         newEditIcon.classList.add('material-symbols-outlined');
         newEditIcon.textContent = 'edit';
+
+        newCheckBox.addEventListener('click', () =>{
+            task.isComplete = true;
+            newTaskRow.classList.add('complete');
+        })
 
         switch(priority) {
             case '0':

@@ -1,4 +1,12 @@
-const taskFactory = function (title, description, dueDate, priority, project){ 
+import { v4 as uuidv4 } from 'uuid';
+
+const taskFactory = function (title, description, dueDate, priority, project){
+    let isComplete = false; 
+    const taskID = uuidv4();
+
+    function getTaskID(){
+        return taskID;
+    }
     function getTitle(){
         return title;
     }
@@ -30,8 +38,8 @@ const taskFactory = function (title, description, dueDate, priority, project){
         project = newProject;
     }
 
-    return {title, getTitle,setTitle,getDescription,setDescription,
-            getDueDate,setDueDate,getPriority,setPriority,getProject,setProject};
+    return {title, taskID, isComplete, project,getTitle,setTitle,getDescription,setDescription,
+            getDueDate,setDueDate,getPriority,setPriority,getProject,setProject,getTaskID};
 }
 
 export default taskFactory

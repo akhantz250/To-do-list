@@ -8,4 +8,7 @@ module.exports = {
     filename: 'main.js',
     path: path.resolve(__dirname, 'dist'),
   },
+  // resolve: {
+  //   modules: ['node_modules'],
+  // }
 };
