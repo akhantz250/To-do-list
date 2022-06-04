@@ -30,7 +30,7 @@ const taskFactory = function (title, description, dueDate, priority, project){
         project = newProject;
     }
 
-    return {getTitle,setTitle,getDescription,setDescription,
+    return {title, getTitle,setTitle,getDescription,setDescription,
             getDueDate,setDueDate,getPriority,setPriority,getProject,setProject};
 }
 

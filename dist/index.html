@@ -36,14 +36,54 @@
         </div>
         <div class="content">
             <h1 id="current">Inbox</h1>
-            <div id="task-display"></div>
-            <div id="add-task">
-                <svg xmlns="http://www.w3.org/2000/svg" height="24" width="24"><path d="M11 19V13H5V11H11V5H13V11H19V13H13V19Z"/></svg>
-                <p>Add task</p>
+            <div class="task-target">
+                <div class="task-row p0">
+                    <div class="task-check"></div>
+                    <div class="task-info">
+                        <div class="task-title">Task 1</div>
+                        <div class="task-description">Do house chores</div>
+                    </div>
+                    <div class="task-due-date">28 Jun</div>
+                    <span class="material-symbols-outlined">edit</span>
+                </div>
+                <div class="task-row p3">
+                    <div class="task-check"></div>
+                    <div class="task-info">
+                        <div class="task-title">Tom's birthday</div>
+                        <div class="task-description">Buy a present and go to his party. Buy a present and go to his party.Buy a present and go to his party.Buy a present and go to his party.Buy a present and go to his party.Buy a present and go to his party.Buy a present and go to his party.Buy a present and go to his party.Buy a present and go to his party.Buy a present and go to his party.</div>
+                    </div>
+                    <div class="task-due-date">31 Jun</div>
+                    <span class="material-symbols-outlined">edit</span>
+                </div>
+                <div class="task-row p2">
+                    <div class="task-check"></div>
+                    <div class="task-info">
+                        <div class="task-title">Do homework</div>
+                        <div class="task-description">EE3014 Assignment 1</div>
+                    </div>
+                    <div class="task-due-date">01 Aug</div>
+                    <span class="material-symbols-outlined">edit</span>
+                </div>
+                <div class="task-row p1">
+                    <div class="task-check"></div>
+                    <div class="task-info">
+                        <div class="task-title">Go to the gym</div>
+                        <div class="task-description">Leg day</div>
+                    </div>
+                    <div class="task-due-date">03 Aug</div>
+                    <span class="material-symbols-outlined">edit</span>
+                </div>
             </div>
+            <div id="form-container">
+                <div id="add-task">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24" width="24"><path d="M11 19V13H5V11H11V5H13V11H19V13H13V19Z"/></svg>
+                    <p>Add task</p>
+                </div>
+            </div>
+            
             <div class="task-form">
                 <form id="new-task" action="#" method="post" autocomplete="off">
-                    <div class="form-row"><input type="text" id="title" name="title" placeholder="Title"></div>
+                    <div class="form-row"><input type="text" id="title" name="title" placeholder="Task name"></div>
                     <div class="form-row"><textarea name="description" id="description" placeholder="Description" rows="5"></textarea></div>
                     <div class="form-row" id="final-row">
                         <label for="due-date">Due Date: <input type="date" name="due-date" id="due-date"></label>
@@ -56,30 +96,12 @@
                             </select>
                         </label>
                         <div class="btn-container"><button id="cancel" type="button">Cancel</button>
-                            <button id="create-task" type="submit">Add task</button></div>
-                        
+                            <button id="create-task" type="submit" disabled>Add task</button></div>
                     </div>
-                    
                 </form>
             </div>
-            <div class="task-row p0">
-                <div class="task-check"></div>
-                <div class="task-info">
-                    <div class="task-title">Task 1</div>
-                    <div class="task-description">Do house chores</div>
-                </div>
-                <div class="task-due-date">28 Jun</div>
-            </div>
-            <div class="task-row p3">
-                <div class="task-check"></div>
-                <div class="task-info">
-                    <div class="task-title">Tom's birthday</div>
-                    <div class="task-description">Buy a present and go to his party. Buy a present and go to his party.Buy a present and go to his party.Buy a present and go to his party.Buy a present and go to his party.Buy a present and go to his party.Buy a present and go to his party.Buy a present and go to his party.Buy a present and go to his party.Buy a present and go to his party.</div>
-                </div>
-                <div class="task-due-date">31 Jun</div>
-            </div>
         </div>
-    </div>a
+    </div>
     
 </body>
 </html>
