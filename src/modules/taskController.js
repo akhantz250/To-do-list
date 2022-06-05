@@ -4,13 +4,6 @@ const taskController = (function(){
     const allTasks= [];
     const allProjects = [];
 
-    function createProject(projectName){
-        if(_checkProjectDuplicate(projectName)){
-            return;
-        }
-        allProjects.push(projectName)
-    }
-
     function createTask(title, description, dueDate, priority, project){
         const newTask = taskFactory(title, description, dueDate, priority, project);
         allTasks.push(newTask);
@@ -32,26 +25,26 @@ const taskController = (function(){
         });
         return tasksByProject;
     }
-
     function checkProjectDuplicate(projectName){
         if(allProjects.includes(projectName)){
             return false;
         }else return true;
     }
-
-    function checkTaskDuplicate(taskName){
-        if(allTasks.includes(projectName)){
-            return false;
-        }else return true;
+    function editTask(title, description, dueDate, priority, taskID){
+        for(let i = 0; i < allTasks.length; i++){
+            if(allTasks[i].taskID === taskID){
+                allTasks[i].setTitle(title);
+                allTasks[i].setDescription(description);
+                allTasks[i].setDueDate(dueDate);
+                allTasks[i].setPriority(priority);
+                console.log(`${allTasks[i].taskID} was edited`);
+                allTasks.forEach(task => console.log(task.getTitle()));
+            }
+        }
     }
-    function loadTask(){
-
-    }
-
-
+    
     return{createTask ,allTasks, getTasksByProject, checkProjectDuplicate, 
-        checkTaskDuplicate,deleteTask};
-
+        deleteTask,editTask};
 })()
 
 export {taskController};
