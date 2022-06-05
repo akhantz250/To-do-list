@@ -3,12 +3,41 @@ const displayController = (function(){
     const initialBox = 'default';
     let currentBox = initialBox;
 
+    function initialise(){
+        loadContent();
+        loadArchiveContent();
+        setUpAddTask();
+    }
     function loadContent(){
         const targetElement = document.querySelector('.task-target');
         targetElement.innerHTML = '';
         const allTasks = taskController.allTasks;
         allTasks.forEach(task =>{
-            _createNewTask(task.getTitle(),task.getDescription(),task.getDueDate(),task.getPriority(),task);
+            if(!task.isComplete){
+                _createNewTask(task.getTitle(),task.getDescription(),task.getDueDate(),task.getPriority(),task);
+            }
+        });
+    }
+    function loadArchiveContent(){
+        if(taskController.allTasks.some((task => task.isComplete))){
+            const titleTarget = document.querySelector('.archive-title-target');
+            titleTarget.innerHTML = `
+            <div class="archive-title">
+                    <h3>Archive</h3>
+                    <span class="material-symbols-outlined">keyboard_arrow_down</span>
+                </div>
+                `
+        }else{
+            const titleTarget = document.querySelector('.archive-title-target');
+            titleTarget.innerHTML = ``;
+        }
+        const targetElement = document.querySelector('.archive-target');
+        targetElement.innerHTML = '';
+        const allTasks = taskController.allTasks;
+        allTasks.forEach(task =>{
+            if(task.isComplete){
+                _createNewTask(task.getTitle(),task.getDescription(),task.getDueDate(),task.getPriority(),task);
+            }
         });
     }
     //creates the create task form when add task is clicked
@@ -77,14 +106,19 @@ const displayController = (function(){
     }
     //creates a new task row
     function _createNewTask(title, description, dueDate, priority, task){
-        const targetElement = document.querySelector('.task-target')
+        let targetElement;
+        if(!task.isComplete){
+            targetElement = document.querySelector('.task-target');
+        }else{
+            targetElement = document.querySelector('.archive-target');
+        }
         const newTaskRow = document.createElement('div');
         const newCheckBox = document.createElement('div');
         const newInfoContainer = document.createElement('div');
         const newTitle = document.createElement('div');
         const newDescription = document.createElement('div');
         const newDueDate = document.createElement('div');
-        const newEditIcon = document.createElement('span');
+        const newIcon = document.createElement('span');
 
         newTaskRow.classList.add('task-row');
         newCheckBox.classList.add('task-check');
@@ -92,8 +126,11 @@ const displayController = (function(){
         newTitle.classList.add('task-title');
         newDescription.classList.add('task-description');
         newDueDate.classList.add('task-due-date');
-        newEditIcon.classList.add('material-symbols-outlined');
-        newEditIcon.textContent = 'edit';
+        newIcon.classList.add('material-symbols-outlined');
+        newIcon.textContent = task.isComplete? 'delete':'edit';
+        if(task.isComplete){
+            newTaskRow.classList.add('complete');
+        }
         switch(priority) {
             case '0':
                 newTaskRow.classList.add('p0');
@@ -110,28 +147,37 @@ const displayController = (function(){
           }
         newTitle.textContent = title;
         newDescription.textContent = description;
-
-        if(dueDate === ''){
-            newDueDate.textContent = 'No date';
-        }else{
-            newDueDate.textContent = dueDate;
-        }
+        newDueDate.textContent = dueDate === ''? 'No date': dueDate;
 
         //edit and complete task event listeners
-        newEditIcon.addEventListener('click', ()=> {
-            setUpAddTask();
-            _setUpEditTaskForm(newTaskRow,targetElement, task);
-        });
+        if(!task.isComplete){
+            newIcon.addEventListener('click', ()=> {
+                setUpAddTask();
+                _setUpEditTaskForm(newTaskRow,targetElement, task);
+            });
+        }else{
+            newIcon.addEventListener('click', ()=> {
+                taskController.removeTask(task.taskID);
+                loadContent();
+                loadArchiveContent()
+            });
+        }
         newCheckBox.addEventListener('click', () =>{
-            task.isComplete = true;
-            newTaskRow.classList.add('complete');
+            if(task.isComplete){
+                task.isComplete = false;
+            }else{
+                task.isComplete = true;
+            }
+            newTaskRow.classList.toggle('complete');
+            loadContent();
+            loadArchiveContent();
         })
 
         targetElement.appendChild(newTaskRow);
         newTaskRow.appendChild(newCheckBox);
         newTaskRow.appendChild(newInfoContainer);
         newTaskRow.appendChild(newDueDate);
-        newTaskRow.appendChild(newEditIcon);
+        newTaskRow.appendChild(newIcon);
         newInfoContainer.appendChild(newTitle);
         newInfoContainer.appendChild(newDescription);
     }
@@ -194,7 +240,7 @@ const displayController = (function(){
             loadContent();
         });
     }
-    return {setUpTaskForm,setUpAddTask,loadContent}
+    return {initialise}
 })();
 
 export default displayController;

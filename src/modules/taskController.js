@@ -9,7 +9,7 @@ const taskController = (function(){
         allTasks.push(newTask);
         return newTask;
     }
-    function deleteTask(taskID){
+    function removeTask(taskID){
         for(let i=0;i<allTasks.length;i++){
             if(allTasks[i].getTaskID() === taskID){
                 allTasks.splice(i,1);
@@ -18,17 +18,6 @@ const taskController = (function(){
             }
         }
         console.log('ended');
-    }
-    function getTasksByProject(project){
-        const tasksByProject = allTasks.filter(task => {
-            return task.getProject() === project;
-        });
-        return tasksByProject;
-    }
-    function checkProjectDuplicate(projectName){
-        if(allProjects.includes(projectName)){
-            return false;
-        }else return true;
     }
     function editTask(title, description, dueDate, priority, taskID){
         for(let i = 0; i < allTasks.length; i++){
@@ -42,9 +31,20 @@ const taskController = (function(){
             }
         }
     }
+    function getTasksByProject(project){
+        const tasksByProject = allTasks.filter(task => {
+            return task.getProject() === project;
+        });
+        return tasksByProject;
+    }
+    function checkProjectDuplicate(projectName){
+        if(allProjects.includes(projectName)){
+            return false;
+        }else return true;
+    }
     
     return{createTask ,allTasks, getTasksByProject, checkProjectDuplicate, 
-        deleteTask,editTask};
+        removeTask,editTask};
 })()
 
 export {taskController};
