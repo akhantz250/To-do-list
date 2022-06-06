@@ -4,24 +4,27 @@ const displayController = (function(){
     let currentBox = initialBox;
 
     function initialise(){
-        _loadContent();
-        _loadArchiveContent();
+        _loadContent(currentBox);
+        _loadArchiveContent(currentBox);
+        _setUpSwitchButtons();
         _loadProject();
         _setUpAddTask();
         _setUpAddProject();
     }
-    function _loadContent(){
+    function _loadContent(box){
         const targetElement = document.querySelector('.task-target');
         targetElement.innerHTML = '';
-        const allTasks = taskController.allTasks;
-        allTasks.forEach(task =>{
+        const taskToDisplay = taskController.getTasksByProject(box);
+        console.log(taskToDisplay)
+        taskToDisplay.forEach(task =>{
             if(!task.isComplete){
                 _createNewTask(task.getTitle(),task.getDescription(),task.getDueDate(),task.getPriority(),task);
             }
         });
     }
-    function _loadArchiveContent(){
-        if(taskController.allTasks.some((task => task.isComplete))){
+    function _loadArchiveContent(box){
+        const taskToDisplay = taskController.getTasksByProject(box);
+        if(taskToDisplay.some((task => task.isComplete))){
             const titleTarget = document.querySelector('.archive-title-target');
             titleTarget.innerHTML = `
             <div class="archive-title">
@@ -35,8 +38,8 @@ const displayController = (function(){
         }
         const targetElement = document.querySelector('.archive-target');
         targetElement.innerHTML = '';
-        const allTasks = taskController.allTasks;
-        allTasks.forEach(task =>{
+        
+        taskToDisplay.forEach(task =>{
             if(task.isComplete){
                 _createNewTask(task.getTitle(),task.getDescription(),task.getDueDate(),task.getPriority(),task);
             }
@@ -114,7 +117,7 @@ const displayController = (function(){
         `;
         const addTaskBtn = document.querySelector('#add-task');
         addTaskBtn.addEventListener('click', () => {
-            _loadContent();
+            _loadContent(currentBox);
             _setUpTaskForm();
         })
     }
@@ -172,8 +175,8 @@ const displayController = (function(){
         }else{
             newIcon.addEventListener('click', ()=> {
                 taskController.removeTask(task.taskID);
-                _loadContent();
-                _loadArchiveContent()
+                _loadContent(currentBox);
+                _loadArchiveContent(currentBox)
             });
         }
         newCheckBox.addEventListener('click', () =>{
@@ -183,8 +186,8 @@ const displayController = (function(){
                 task.isComplete = true;
             }
             newTaskRow.classList.toggle('complete');
-            _loadContent();
-            _loadArchiveContent();
+            _loadContent(currentBox);
+            _loadArchiveContent(currentBox);
         })
 
         targetElement.appendChild(newTaskRow);
@@ -247,12 +250,12 @@ const displayController = (function(){
             } 
         });
 
-        cancelBtn.addEventListener('click',() => _loadContent());
+        cancelBtn.addEventListener('click',() => _loadContent(currentBox));
         editTaskBtn.addEventListener('click',(e) => {
             e.preventDefault();
             taskController.editTask(titleInput.value, descriptionInput.value, dueDateInput.value,priorityInput.value, task.taskID);
             form.reset();
-            _loadContent();
+            _loadContent(currentBox);
         });
     }
     //creates event listeners for add project related elements
@@ -321,6 +324,7 @@ const displayController = (function(){
         `
         project.addEventListener('click',() => {
             console.log(`Clicked ${projectName}`);
+            _switchProject(projectName);
         });
         const deleteBtn = project.querySelector('svg');
         deleteBtn.addEventListener('click',(e) =>{
@@ -329,6 +333,45 @@ const displayController = (function(){
             _loadProject();
         })
         projectList.appendChild(project);
+    }
+    //changes the main display to show task by selected project
+    function _switchProject(project){
+        currentBox = project;
+        _changeBoxTitle();
+        _loadContent(currentBox);
+        _loadArchiveContent(currentBox);
+        _setUpAddTask();
+    }
+    function _changeBoxTitle(){
+        const currentBoxElement = document.querySelector('#current-box');
+        if(currentBox !== 'default')
+        {
+            currentBoxElement.textContent = currentBox;
+        }else{
+            currentBoxElement.textContent = 'Inbox';
+        }
+        
+    }
+    function _setUpSwitchButtons(){
+        const inboxElement = document.querySelector('#inbox');
+        const todayElement = document.querySelector('#today');
+        const upcomingElement = document.querySelector('#upcoming');
+
+        inboxElement.addEventListener('click', () => {
+            currentBox = 'default';
+            _loadContent(currentBox);
+            _loadArchiveContent(currentBox);
+            _changeBoxTitle();
+            _setUpAddTask();
+        });
+        todayElement.addEventListener('click', () => {
+            // currentBox = 'Today';
+            // _changeBoxTitle();
+        });
+        upcomingElement.addEventListener('click', () => {
+            // currentBox = 'Upcoming';
+            // _changeBoxTitle();
+        });
     }
     return {initialise}
 })();

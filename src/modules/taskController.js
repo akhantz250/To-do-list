@@ -32,9 +32,13 @@ const taskController = (function(){
         }
     }
     function getTasksByProject(project){
-        const tasksByProject = allTasks.filter(task => {
-            return task.getProject() === project;
-        });
+        console.log(project)
+        if(project === 'default'){
+            return allTasks;
+        }
+        const tasksByProject = allTasks.filter(task => 
+            task.getProject() === project
+        );
         return tasksByProject;
     }
     function checkProjectDuplicate(projectName){
