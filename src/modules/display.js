@@ -1,4 +1,5 @@
 import {taskController} from './taskController';
+import { format } from 'date-fns';
 const displayController = (function(){
     const initialBox = 'default';
     let currentBox = initialBox;
@@ -14,7 +15,12 @@ const displayController = (function(){
     function _loadContent(box){
         const targetElement = document.querySelector('.task-target');
         targetElement.innerHTML = '';
-        const taskToDisplay = taskController.getTasksByProject(box);
+        let taskToDisplay;
+        if(currentBox === 'Today'){
+            taskToDisplay = taskController.getTodayTask();
+        }else{
+            taskToDisplay = taskController.getTasksByProject(box);
+        }
         taskToDisplay.forEach(task =>{
             if(!task.isComplete){
                 _createNewTask(task.getTitle(),task.getDescription(),task.getDueDate(),task.getPriority(),task);
@@ -22,7 +28,12 @@ const displayController = (function(){
         });
     }
     function _loadArchiveContent(box){
-        const taskToDisplay = taskController.getTasksByProject(box);
+        let taskToDisplay;
+        if(currentBox === 'Today'){
+            taskToDisplay = taskController.getTodayTask();
+        }else{
+            taskToDisplay = taskController.getTasksByProject(box);
+        }
         if(taskToDisplay.some((task => task.isComplete))){
             const titleTarget = document.querySelector('.archive-title-target');
             titleTarget.innerHTML = `
@@ -94,10 +105,14 @@ const displayController = (function(){
             const description = form.elements['description'].value;
             const dueDate = form.elements['due-date'].value;
             const priority = form.elements['priority'].value;
+            let box;
+            if(currentBox === 'Today' || currentBox === 'Upcoming'){
+                box = 'default';
+            }else box = currentBox
 
-
-            const task = taskController.createTask(title, description, dueDate, priority, currentBox);
+            const task = taskController.createTask(title, description, dueDate, priority, box);
             _createNewTask(title, description, dueDate, priority, task);
+            // _loadContent(currentBox);
             _setUpAddTask();
             form.reset();
         });
@@ -160,22 +175,31 @@ const displayController = (function(){
           }
         newTitle.textContent = title;
         newDescription.textContent = description;
-        newDueDate.textContent = dueDate === ''? 'No date': dueDate;
-
-        //edit and complete task event listeners
+        // newDueDate.textContent = dueDate === ''? 'No date': dueDate;
+        if(dueDate === ''){
+            newDueDate.textContent ='No date';
+        }else if(taskController.isToday(dueDate)){
+            newDueDate.textContent = 'Today';
+        }else{
+            newDueDate.textContent = _formatDate(dueDate);
+        }
+        //edit task event listeners
         if(!task.isComplete){
-            newIcon.addEventListener('click', ()=> {
+            newIcon.addEventListener('click', (e)=> {
+                e.stopPropagation();
                 _setUpAddTask();
                 _setUpEditTaskForm(newTaskRow,targetElement, task);
             });
-        }else{
-            newIcon.addEventListener('click', ()=> {
+        }else{ //complete task event listeners
+            newIcon.addEventListener('click', (e)=> {
+                e.stopPropagation();
                 taskController.removeTask(task.taskID);
                 _loadContent(currentBox);
                 _loadArchiveContent(currentBox)
             });
         }
-        newCheckBox.addEventListener('click', () =>{
+        newCheckBox.addEventListener('click', (e) =>{
+            e.stopPropagation();
             if(task.isComplete){
                 task.isComplete = false;
             }else{
@@ -359,10 +383,7 @@ const displayController = (function(){
         const upcomingElement = document.querySelector('#upcoming');
 
         inboxElement.addEventListener('click', _switchToInbox);
-        todayElement.addEventListener('click', () => {
-            // currentBox = 'Today';
-            // _changeBoxTitle();
-        });
+        todayElement.addEventListener('click', _switchToToday);
         upcomingElement.addEventListener('click', () => {
             // currentBox = 'Upcoming';
             // _changeBoxTitle();
@@ -374,6 +395,22 @@ const displayController = (function(){
             _loadArchiveContent(currentBox);
             _changeBoxTitle();
             _setUpAddTask();
+    }
+    function _switchToToday(){
+        currentBox = 'Today';
+            _loadContent(currentBox);
+            _loadArchiveContent(currentBox);
+            _changeBoxTitle();
+            _setUpAddTask();
+    }
+    function _formatDate(date){
+        // yyyy-MM-dd
+        const year = parseInt(date.slice(0,4));
+        const monthIndex = parseInt(date.slice(5,7))-1;
+        const day = parseInt(date.slice(8,10));
+        const preDate = new Date(year, monthIndex,day);
+        
+        return format(preDate, 'do MMM yyyy');
     }
     return {initialise}
 })();

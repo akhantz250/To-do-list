@@ -1,4 +1,5 @@
 import taskFactory from "./taskFactory";
+import { format } from 'date-fns';
 
 const taskController = (function(){
     const allTasks= [];
@@ -60,9 +61,18 @@ const taskController = (function(){
             }else console.log(`save ${allTasks[x].getTitle()}`);
         }
     }
-    
+    function isToday(date){
+        const today =  format(new Date(), 'yyyy-MM-dd');
+        if(date === today){
+            return true;
+        }else return false;
+    }
+    function getTodayTask(){
+        const todayTask = allTasks.filter(task => isToday(task.getDueDate()));
+        return todayTask;
+    }
     return{createTask, removeTask,editTask, allTasks, allProjects, 
-        createProject, removeProject, getTasksByProject, checkProjectDuplicate};
+        createProject, removeProject, getTasksByProject, checkProjectDuplicate, isToday, getTodayTask};
 })()
 
 export {taskController};
