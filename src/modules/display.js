@@ -4,11 +4,13 @@ const displayController = (function(){
     let currentBox = initialBox;
 
     function initialise(){
-        loadContent();
-        loadArchiveContent();
-        setUpAddTask();
+        _loadContent();
+        _loadArchiveContent();
+        _loadProject();
+        _setUpAddTask();
+        _setUpAddProject();
     }
-    function loadContent(){
+    function _loadContent(){
         const targetElement = document.querySelector('.task-target');
         targetElement.innerHTML = '';
         const allTasks = taskController.allTasks;
@@ -18,7 +20,7 @@ const displayController = (function(){
             }
         });
     }
-    function loadArchiveContent(){
+    function _loadArchiveContent(){
         if(taskController.allTasks.some((task => task.isComplete))){
             const titleTarget = document.querySelector('.archive-title-target');
             titleTarget.innerHTML = `
@@ -40,8 +42,16 @@ const displayController = (function(){
             }
         });
     }
+    function _loadProject(){
+        const allProjects = taskController.allProjects;
+        const targetElement = document.querySelector('.project-list');
+        targetElement.innerHTML='';
+        allProjects.forEach(project =>{
+            _createProject(project);
+        });
+    }
     //creates the create task form when add task is clicked
-    function setUpTaskForm(){
+    function _setUpTaskForm(){
         const formContainerElement = document.querySelector('#form-container');
         formContainerElement.innerHTML = `
         <div class="task-form">
@@ -75,22 +85,26 @@ const displayController = (function(){
                 addTaskBtn.setAttribute('disabled','');
             } 
         });
-        cancelBtn.addEventListener('click',() => setUpAddTask());
+        cancelBtn.addEventListener('click',() => _setUpAddTask());
         addTaskBtn.addEventListener('click',(e) => {
             e.preventDefault();
             const title = form.elements['title'].value;
             const description = form.elements['description'].value;
             const dueDate = form.elements['due-date'].value;
             const priority = form.elements['priority'].value;
+
+
             const task = taskController.createTask(title, description, dueDate, priority, currentBox);
             _createNewTask(title, description, dueDate, priority, task);
             console.log(taskController.allTasks);
-            setUpAddTask();
+
+
+            _setUpAddTask();
             form.reset();
         });
     }
     //hides the create task form and creates the add task button back
-    function setUpAddTask(){
+    function _setUpAddTask(){
         const formContainerElement = document.querySelector('#form-container');
         formContainerElement.innerHTML =`
         <div id="add-task">
@@ -100,8 +114,8 @@ const displayController = (function(){
         `;
         const addTaskBtn = document.querySelector('#add-task');
         addTaskBtn.addEventListener('click', () => {
-            loadContent();
-            setUpTaskForm();
+            _loadContent();
+            _setUpTaskForm();
         })
     }
     //creates a new task row
@@ -152,14 +166,14 @@ const displayController = (function(){
         //edit and complete task event listeners
         if(!task.isComplete){
             newIcon.addEventListener('click', ()=> {
-                setUpAddTask();
+                _setUpAddTask();
                 _setUpEditTaskForm(newTaskRow,targetElement, task);
             });
         }else{
             newIcon.addEventListener('click', ()=> {
                 taskController.removeTask(task.taskID);
-                loadContent();
-                loadArchiveContent()
+                _loadContent();
+                _loadArchiveContent()
             });
         }
         newCheckBox.addEventListener('click', () =>{
@@ -169,8 +183,8 @@ const displayController = (function(){
                 task.isComplete = true;
             }
             newTaskRow.classList.toggle('complete');
-            loadContent();
-            loadArchiveContent();
+            _loadContent();
+            _loadArchiveContent();
         })
 
         targetElement.appendChild(newTaskRow);
@@ -181,6 +195,7 @@ const displayController = (function(){
         newInfoContainer.appendChild(newTitle);
         newInfoContainer.appendChild(newDescription);
     }
+    //creates edit form
     function _setUpEditTaskForm(taskRow, targetElement, task){
         const formContainerElement = document.createElement('div');
         formContainerElement.classList.add('edit-form-container');
@@ -232,13 +247,88 @@ const displayController = (function(){
             } 
         });
 
-        cancelBtn.addEventListener('click',() => loadContent());
+        cancelBtn.addEventListener('click',() => _loadContent());
         editTaskBtn.addEventListener('click',(e) => {
             e.preventDefault();
             taskController.editTask(titleInput.value, descriptionInput.value, dueDateInput.value,priorityInput.value, task.taskID);
             form.reset();
-            loadContent();
+            _loadContent();
         });
+    }
+    //creates event listeners for add project related elements
+    function _setUpAddProject(){
+        const addProject = document.querySelector('#add-project');
+        const submitProject = document.querySelector('#project-submit');
+        const closeProject = document.querySelector('#close-project');
+        const inputProject = document.querySelector('#project-name');
+
+        inputProject.addEventListener('input', (e) =>{
+            if(inputProject.value.length === 0 || taskController.checkProjectDuplicate(inputProject.value)){
+                submitProject.setAttribute('disabled','');
+                
+            }else{
+                submitProject.removeAttribute('disabled');
+            } 
+            if(taskController.checkProjectDuplicate(inputProject.value)){
+                _showWarning();
+            }else{
+                _hideWarning();
+            }
+        });
+
+        addProject.addEventListener('click', () => {
+            _showInputModal();
+        })
+
+        submitProject.addEventListener('click', (e) => {
+            e.preventDefault();
+            const form = document.querySelector('#project-name-form');
+            const projectName = form.elements['project-name'].value;
+            taskController.createProject(projectName);
+            _createProject(projectName);
+            form.reset();
+            _hideInputModal();
+        })
+        closeProject.addEventListener('click',() =>{
+            const form = document.querySelector('#project-name-form');
+            form.reset();
+            _hideInputModal();
+        })
+    }
+    function _showInputModal(){
+        const modal = document.querySelector('.add-project-modal-container');
+        modal.classList.add('show');
+        document.querySelector('#project-name').focus();
+    }
+    function _hideInputModal(){
+        const modal = document.querySelector('.add-project-modal-container');
+        document.querySelector('#project-submit').setAttribute('disabled','');
+        modal.classList.remove('show');
+    }
+    function _showWarning(){
+        document.querySelector('.warning').classList.add('show-warning');
+    }
+    function _hideWarning(){
+        document.querySelector('.warning').classList.remove('show-warning');
+    }
+    function _createProject(projectName){
+        const projectList = document.querySelector('.project-list');
+        const project = document.createElement('div');
+        project.classList.add('project');
+        project.setAttribute('data-name',projectName);
+        project.innerHTML = `
+        <div class="bullet"></div><span>${projectName}</span><svg xmlns="http://www.w3.org/2000/svg" height="20" width="20"><path d="M5.375 15.562 4.438 14.625 9.062 10 4.438 5.375 5.375 4.438 10 9.062 14.625 4.438 15.562 5.375 10.938 10 15.562 14.625 14.625 15.562 10 10.938Z"/></svg>
+        `
+        project.addEventListener('click',() => {
+            console.log(`Clicked ${projectName}`);
+        });
+        const deleteBtn = project.querySelector('svg');
+        deleteBtn.addEventListener('click',(e) =>{
+            e.stopPropagation();
+            taskController.removeProject(projectName);
+            _loadProject();
+        })
+        projectList.appendChild(project);
     }
     return {initialise}
 })();

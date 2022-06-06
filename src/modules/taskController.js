@@ -2,7 +2,7 @@ import taskFactory from "./taskFactory";
 
 const taskController = (function(){
     const allTasks= [];
-    const allProjects = [];
+    const allProjects = ['Chores','Homework'];
 
     function createTask(title, description, dueDate, priority, project){
         const newTask = taskFactory(title, description, dueDate, priority, project);
@@ -39,12 +39,27 @@ const taskController = (function(){
     }
     function checkProjectDuplicate(projectName){
         if(allProjects.includes(projectName)){
+            return true;
+        }else{
             return false;
-        }else return true;
+        } 
     }
+    function createProject(projectName){
+        allProjects.push(projectName);
+        console.log('added project');
+        console.log(allProjects);
+    }
+    function removeProject(projectName){
+        for(let i=0;i<allProjects.length;i++){
+            if(allProjects[i] === projectName){
+                allProjects.splice(i,1);
+                console.log(allProjects[i]);
+                return;
+            }
+        }}
     
-    return{createTask ,allTasks, getTasksByProject, checkProjectDuplicate, 
-        removeTask,editTask};
+    return{createTask, removeTask,editTask, allTasks, allProjects, 
+        createProject, removeProject, getTasksByProject, checkProjectDuplicate};
 })()
 
 export {taskController};

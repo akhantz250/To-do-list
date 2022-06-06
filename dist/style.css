@@ -30,6 +30,10 @@
     user-select: none;
 }
 
+.sidebar .project span{
+    width: 120px;
+}
+
 .sidebar{
     min-height: calc(100vh - 4rem);
     width: 270px;
@@ -92,12 +96,8 @@
     height: 2rem;
     display: flex;
     align-items: center;
-    
     gap: 1rem;
-    
     margin: 0 auto;
-    
-    
     border-radius: 6px;
 }
 
@@ -133,10 +133,6 @@
     font-size: 16px;
     padding: 0.2rem 0.4rem;
 }
-
-/* #title:placeholder-shown{
-    background-color: var(--red-200);
-} */
 
 .form-row input:focus, .form-row >textarea:focus, .form-row select{
     outline: none;
@@ -191,10 +187,12 @@
 #create-task,#edit-task-btn{
     background-color: var(--green-200);
 }
+
 #create-task:hover, #edit-task-btn:hover{
     background-color: var(--green-500);
 }
-#create-task:disabled, #edit-task-btn:disabled{
+
+#create-task:disabled, #project-submit:disabled,#project-submit:disabled:hover, #edit-task-btn:disabled{
     background-color: var(--gray600);
 }
 
@@ -202,6 +200,7 @@
     background-color: var(--red-200);
     margin-right: 1rem;
 }
+
 #cancel:hover, #edit-cancel:hover{
     background-color: var(--red-400);
 }
@@ -239,9 +238,11 @@
     top: 50%;
     transform: translate(0, -50%);
 }
+
 .task-check:hover{
     background-color: var(--gray600);;
 }
+
 .task-row{
     display: flex;
     flex-direction: row;
@@ -253,15 +254,14 @@
     background-color: var(--gray300);
     border-radius: 5px;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-    
 }
+
 .task-info{
     padding-left: 2rem;
     overflow: hidden;
-    white-space: nowrap;
-    
-    
+    white-space: nowrap;   
 }
+
 .task-description{
     min-height: 14px;
     display: block;
@@ -305,6 +305,7 @@
 .complete .task-info .task-title{
     text-decoration: line-through;
 }
+
 .complete{
     border-color: black;
 }
@@ -335,4 +336,86 @@
     position: absolute;
     right: 0%;
     user-select: none;
+}
+
+.project svg:hover{
+    cursor: pointer;
+}
+
+.add-project-modal-container{
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 0;
+    top: 0%;
+    left: 0%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none;
+    opacity: 0%;
+    transition: opacity 0.3s ease;
+}
+
+.add-project-modal-container.show{
+    pointer-events: auto;
+    opacity: 1;
+}
+
+.add-project-modal-container span{
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin-right: 0.5rem;
+    margin-top: 0.5rem;
+    user-select: none;
+    cursor: pointer;
+}
+
+.add-project-modal{
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.24);
+    height: 210px;
+    width: 320px;
+    background-color: white;
+    text-align: center;
+    position: relative;
+}
+
+
+#project-submit{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 1.2rem;
+    border: none;
+    background-color: var(--green-200);
+    color: black;
+    font-size: 16px;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#project-submit:hover{
+    background-color: var(--green-500);
+}
+
+#project-name{
+    font-size: 16px;
+    outline: none;
+    padding: 0.2rem 0.5rem;
+}
+
+.warning{
+    color: #EF5350;
+    font-size: 12px;
+    margin-top: 6px;
+    visibility: hidden;
+}
+
+div.show-warning{
+    visibility: visible;
 }
