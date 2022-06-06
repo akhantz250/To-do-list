@@ -13,11 +13,9 @@ const taskController = (function(){
         for(let i=0;i<allTasks.length;i++){
             if(allTasks[i].getTaskID() === taskID){
                 allTasks.splice(i,1);
-                console.log('deleted');
                 return;
             }
         }
-        console.log('ended');
     }
     function editTask(title, description, dueDate, priority, taskID){
         for(let i = 0; i < allTasks.length; i++){
@@ -26,13 +24,10 @@ const taskController = (function(){
                 allTasks[i].setDescription(description);
                 allTasks[i].setDueDate(dueDate);
                 allTasks[i].setPriority(priority);
-                console.log(`${allTasks[i].taskID} was edited`);
-                allTasks.forEach(task => console.log(task.getTitle()));
             }
         }
     }
     function getTasksByProject(project){
-        console.log(project)
         if(project === 'default'){
             return allTasks;
         }
@@ -50,17 +45,21 @@ const taskController = (function(){
     }
     function createProject(projectName){
         allProjects.push(projectName);
-        console.log('added project');
-        console.log(allProjects);
     }
     function removeProject(projectName){
-        for(let i=0;i<allProjects.length;i++){
+        console.log(allTasks.forEach(task => console.log(task.getTitle(), task.getProject())));
+        for(let i = allProjects.length; i > 0  ;i--){
             if(allProjects[i] === projectName){
                 allProjects.splice(i,1);
-                console.log(allProjects[i]);
-                return;
             }
-        }}
+        }
+        for(let x = allTasks.length - 1; x >=0 ;x--){
+            if(allTasks[x].getProject() === projectName){
+                console.log(`Deleted ${allTasks[x].getTitle()}`);
+                allTasks.splice(x,1);
+            }else console.log(`save ${allTasks[x].getTitle()}`);
+        }
+    }
     
     return{createTask, removeTask,editTask, allTasks, allProjects, 
         createProject, removeProject, getTasksByProject, checkProjectDuplicate};

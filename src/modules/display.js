@@ -15,7 +15,6 @@ const displayController = (function(){
         const targetElement = document.querySelector('.task-target');
         targetElement.innerHTML = '';
         const taskToDisplay = taskController.getTasksByProject(box);
-        console.log(taskToDisplay)
         taskToDisplay.forEach(task =>{
             if(!task.isComplete){
                 _createNewTask(task.getTitle(),task.getDescription(),task.getDueDate(),task.getPriority(),task);
@@ -99,9 +98,6 @@ const displayController = (function(){
 
             const task = taskController.createTask(title, description, dueDate, priority, currentBox);
             _createNewTask(title, description, dueDate, priority, task);
-            console.log(taskController.allTasks);
-
-
             _setUpAddTask();
             form.reset();
         });
@@ -330,7 +326,12 @@ const displayController = (function(){
         deleteBtn.addEventListener('click',(e) =>{
             e.stopPropagation();
             taskController.removeProject(projectName);
+            // _loadContent(currentBox);
+            // _loadArchiveContent(currentBox);
             _loadProject();
+            if(currentBox === projectName){
+                _switchToInbox();}
+            
         })
         projectList.appendChild(project);
     }
@@ -357,13 +358,7 @@ const displayController = (function(){
         const todayElement = document.querySelector('#today');
         const upcomingElement = document.querySelector('#upcoming');
 
-        inboxElement.addEventListener('click', () => {
-            currentBox = 'default';
-            _loadContent(currentBox);
-            _loadArchiveContent(currentBox);
-            _changeBoxTitle();
-            _setUpAddTask();
-        });
+        inboxElement.addEventListener('click', _switchToInbox);
         todayElement.addEventListener('click', () => {
             // currentBox = 'Today';
             // _changeBoxTitle();
@@ -372,6 +367,13 @@ const displayController = (function(){
             // currentBox = 'Upcoming';
             // _changeBoxTitle();
         });
+    }
+    function _switchToInbox(){
+        currentBox = 'default';
+            _loadContent(currentBox);
+            _loadArchiveContent(currentBox);
+            _changeBoxTitle();
+            _setUpAddTask();
     }
     return {initialise}
 })();
