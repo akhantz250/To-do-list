@@ -13,6 +13,10 @@ const displayController = (function(){
         _setUpAddProject();
     }
     function _loadContent(box){
+        if(currentBox ==='Upcoming'){
+            _loadUpcomingTask();
+            return;
+        }
         const targetElement = document.querySelector('.task-target');
         targetElement.innerHTML = '';
         let taskToDisplay;
@@ -26,8 +30,16 @@ const displayController = (function(){
                 _createNewTask(task.getTitle(),task.getDescription(),task.getDueDate(),task.getPriority(),task);
             }
         });
+        console.log(taskController.allTasks);
     }
     function _loadArchiveContent(box){
+        if(box === 'Upcoming'){
+            const titleTarget = document.querySelector('.archive-title-target');
+            titleTarget.innerHTML = ``;
+            const targetElement = document.querySelector('.archive-target');
+            targetElement.innerHTML = '';
+            return
+        }
         let taskToDisplay;
         if(currentBox === 'Today'){
             taskToDisplay = taskController.getTodayTask();
@@ -117,7 +129,7 @@ const displayController = (function(){
 
             const task = taskController.createTask(title, description, dueDate, priority, box);
             _createNewTask(title, description, dueDate, priority, task);
-            // _loadContent(currentBox);
+            if(currentBox === 'Upcoming'){_loadContent(currentBox);} 
             _setUpAddTask();
             form.reset();
         });
@@ -351,7 +363,6 @@ const displayController = (function(){
         <div class="bullet"></div><span>${projectName}</span><svg xmlns="http://www.w3.org/2000/svg" height="20" width="20"><path d="M5.375 15.562 4.438 14.625 9.062 10 4.438 5.375 5.375 4.438 10 9.062 14.625 4.438 15.562 5.375 10.938 10 15.562 14.625 14.625 15.562 10 10.938Z"/></svg>
         `
         project.addEventListener('click',() => {
-            console.log(`Clicked ${projectName}`);
             _switchProject(projectName);
         });
         const deleteBtn = project.querySelector('svg');
@@ -362,7 +373,11 @@ const displayController = (function(){
             // _loadArchiveContent(currentBox);
             _loadProject();
             if(currentBox === projectName){
-                _switchToInbox();}
+                _switchToInbox();
+            }else{
+              _loadContent(currentBox);
+              _loadArchiveContent(currentBox);  
+            }
             
         })
         projectList.appendChild(project);
@@ -392,10 +407,7 @@ const displayController = (function(){
 
         inboxElement.addEventListener('click', _switchToInbox);
         todayElement.addEventListener('click', _switchToToday);
-        upcomingElement.addEventListener('click', () => {
-            // currentBox = 'Upcoming';
-            // _changeBoxTitle();
-        });
+        upcomingElement.addEventListener('click', _switchToUpcoming);
     }
     function _switchToInbox(){
         currentBox = 'default';
@@ -411,6 +423,39 @@ const displayController = (function(){
             _changeBoxTitle();
             _setUpAddTask();
     }
+    function _switchToUpcoming(){
+        currentBox = 'Upcoming';
+        _loadUpcomingTask();
+        _loadArchiveContent(currentBox);
+        _changeBoxTitle();
+        _setUpAddTask();
+    }
+    function _loadUpcomingTask(){
+        const targetElement = document.querySelector('.task-target');
+        targetElement.innerHTML = '';
+        const sortedTask = taskController.sortTaskWithDates();
+        const taskToDisplay = sortedTask.filter(task => !task.isComplete);
+        const allDates =[];
+        taskToDisplay.forEach(task => {
+            if(!allDates.includes(task.getDueDate())){
+                allDates.push(task.getDueDate());
+                const newDateElement = document.createElement('div');
+                newDateElement.classList.add('upcoming-date');
+                if(task.getDueDate() < taskController.getTodayDate()){
+                    newDateElement.classList.add('overdue');
+                }
+                newDateElement.setAttribute('data-date', task.getDueDate());
+                newDateElement.textContent = _formatDate(task.getDueDate());
+                targetElement.appendChild(newDateElement);
+            }
+        })
+        taskToDisplay.forEach(task =>{
+            if(!task.isComplete){
+                _createNewUpcomingTask(task.getTitle(),task.getDescription(),task.getDueDate(),task.getPriority(),task);
+            }
+        });
+    }
+    
     function _formatDate(date){
         // yyyy-MM-dd
         const year = parseInt(date.slice(0,4));
@@ -425,11 +470,89 @@ const displayController = (function(){
         if(formContainer === null){
             return
         }else{
-            const target = document.querySelector('.task-target');
-            target.removeChild(formContainer);
+            // const target = document.querySelector('.task-target');
+            formContainer.remove();
             const hiddenElement = document.querySelector('#hide-task');
             hiddenElement.removeAttribute('id');
         }
+    }
+    function _createNewUpcomingTask(title, description, dueDate, priority, task){
+        const targetElement = document.querySelector(`[data-date="${task.getDueDate()}"]`)
+        const newTaskRow = document.createElement('div');
+        const newCheckBox = document.createElement('div');
+        const newInfoContainer = document.createElement('div');
+        const newTitle = document.createElement('div');
+        const newDescription = document.createElement('div');
+        const newDueDate = document.createElement('div');
+        const newIcon = document.createElement('span');
+
+        newTaskRow.classList.add('task-row');
+        newCheckBox.classList.add('task-check');
+        newInfoContainer.classList.add('task-info');
+        newTitle.classList.add('task-title');
+        newDescription.classList.add('task-description');
+        newDueDate.classList.add('task-due-date');
+        newIcon.classList.add('material-symbols-outlined');
+        newIcon.textContent = 'edit';
+        
+        switch(priority) {
+            case '0':
+                newTaskRow.classList.add('p0');
+                break;
+            case '1':
+                newTaskRow.classList.add('p1');
+                break;
+            case '2':
+                newTaskRow.classList.add('p2');
+                break;
+            case '3':
+                newTaskRow.classList.add('p3');
+                break;
+          }
+        newTitle.textContent = title;
+        newDescription.textContent = description;
+        
+        if(dueDate === ''){
+            newDueDate.textContent ='No date';
+        }else if(taskController.isToday(dueDate)){
+            newDueDate.textContent = 'Today';
+        }else{
+            newDueDate.textContent = _formatDate(dueDate);
+        }
+        //edit task event listeners
+        if(!task.isComplete){
+            newIcon.addEventListener('click', (e)=> {
+                e.stopPropagation();
+                _setUpAddTask();
+                _closeEditTaskForm();
+                _setUpEditTaskForm(newTaskRow,targetElement, task);
+            });
+        }else{ //complete task event listeners
+            newIcon.addEventListener('click', (e)=> {
+                e.stopPropagation();
+                taskController.removeTask(task.taskID);
+                _loadContent(currentBox);
+                _loadArchiveContent(currentBox)
+            });
+        }
+        newCheckBox.addEventListener('click', (e) =>{
+            e.stopPropagation();
+            if(task.isComplete){
+                task.isComplete = false;
+            }else{
+                task.isComplete = true;
+            }
+            newTaskRow.classList.toggle('complete');
+            _loadContent(currentBox);
+        })
+
+        targetElement.appendChild(newTaskRow);
+        newTaskRow.appendChild(newCheckBox);
+        newTaskRow.appendChild(newInfoContainer);
+        newTaskRow.appendChild(newDueDate);
+        newTaskRow.appendChild(newIcon);
+        newInfoContainer.appendChild(newTitle);
+        newInfoContainer.appendChild(newDescription);
     }
     return {initialise}
 })();

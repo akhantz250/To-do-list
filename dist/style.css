@@ -60,6 +60,7 @@
     display: flex;
     align-items: center;
     gap: 12px;
+    cursor: pointer;
 }
 
 .nav,.project{
@@ -119,6 +120,10 @@
     border: 1px solid black;
     background-color: var(--gray300);
     border-radius: 5px;
+}
+
+.edit-task-form label{
+    color: black;
 }
 
 .form-row{
@@ -245,6 +250,9 @@
 }
 
 .task-row{
+    font-weight: 500;
+    text-align: left;
+    color: black;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -423,4 +431,17 @@ div.show-warning{
 
 #hide-task{
     display: none;
+}
+
+.upcoming-date{
+    text-align: center;
+    color: var(--gray600);
+    font-weight: 600;
+    margin-bottom: 2rem;
+}
+.edit-form-container{
+    margin-top: 2rem;
+}
+.overdue{
+    color: #EF5350;
 }
