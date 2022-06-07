@@ -127,7 +127,7 @@ const displayController = (function(){
                 box = 'default';
             }else box = currentBox
 
-            const task = taskController.createTask(title, description, dueDate, priority, box);
+            const task = taskController.createTask(title, description, dueDate, priority, box, false);
             _createNewTask(title, description, dueDate, priority, task);
             if(currentBox === 'Upcoming'){_loadContent(currentBox);} 
             _setUpAddTask();

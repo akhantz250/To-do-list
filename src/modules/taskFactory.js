@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 
-const taskFactory = function (title, description, dueDate, priority, project){
-    let isComplete = false; 
+const taskFactory = function (title, description, dueDate, priority, project, complete){
+    let isComplete = complete; 
     const taskID = uuidv4();
 
     function getTaskID(){

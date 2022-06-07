@@ -1,19 +1,24 @@
 import taskFactory from "./taskFactory";
 import { format, compareAsc } from 'date-fns';
+import storage from './storage';
 
 const taskController = (function(){
-    const allTasks= [];
-    const allProjects = ['Errands','School'];
+    const storageTaskArray = storage.getTasks();
+    const storageProjectsArray = storage.getProjects();
+    const allTasks= [...storageTaskArray];
+    const allProjects = [...storageProjectsArray];
 
-    function createTask(title, description, dueDate, priority, project){
-        const newTask = taskFactory(title, description, dueDate, priority, project);
+    function createTask(title, description, dueDate, priority, project, complete){
+        const newTask = taskFactory(title, description, dueDate, priority, project, complete);
         allTasks.push(newTask);
+        storage.setTasks(allTasks);
         return newTask;
     }
     function removeTask(taskID){
         for(let i=0;i<allTasks.length;i++){
             if(allTasks[i].getTaskID() === taskID){
                 allTasks.splice(i,1);
+                storage.setTasks(allTasks);
                 return;
             }
         }
@@ -27,6 +32,7 @@ const taskController = (function(){
                 allTasks[i].setPriority(priority);
             }
         }
+        storage.setTasks(allTasks);
     }
     function getTasksByProject(project){
         if(project === 'default'){
@@ -46,9 +52,10 @@ const taskController = (function(){
     }
     function createProject(projectName){
         allProjects.push(projectName);
+        storage.setProjects(allProjects);
     }
     function removeProject(projectName){
-        for(let i = allProjects.length; i > 0  ;i--){
+        for(let i = allProjects.length; i >= 0  ;i--){
             if(allProjects[i] === projectName){
                 allProjects.splice(i,1);}
         }
@@ -56,6 +63,8 @@ const taskController = (function(){
             if(allTasks[x].getProject() === projectName){
                 allTasks.splice(x,1);}
         }
+        storage.setProjects(allProjects);
+        storage.setTasks(allTasks);
     }
     function isToday(date){
         const today =  getTodayDate();
