@@ -57,6 +57,7 @@
   
 }
 .nav,.project{
+    width: 206px;
     display: flex;
     align-items: center;
     gap: 12px;
