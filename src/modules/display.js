@@ -1,5 +1,5 @@
 import {taskController} from './taskController';
-import { format } from 'date-fns';
+import { format, isToday, add } from 'date-fns';
 const displayController = (function(){
     const initialBox = 'default';
     let currentBox = initialBox;
@@ -11,6 +11,7 @@ const displayController = (function(){
         _loadProject();
         _setUpAddTask();
         _setUpAddProject();
+        _setUpCloseShowTask()
     }
     function _loadContent(box){
         if(currentBox ==='Upcoming'){
@@ -30,7 +31,6 @@ const displayController = (function(){
                 _createNewTask(task.getTitle(),task.getDescription(),task.getDueDate(),task.getPriority(),task);
             }
         });
-        console.log(taskController.allTasks);
     }
     function _loadArchiveContent(box){
         if(box === 'Upcoming'){
@@ -192,7 +192,6 @@ const displayController = (function(){
           }
         newTitle.textContent = title;
         newDescription.textContent = description;
-        // newDueDate.textContent = dueDate === ''? 'No date': dueDate;
         if(dueDate === ''){
             newDueDate.textContent ='No date';
         }else if(taskController.isToday(dueDate)){
@@ -226,6 +225,9 @@ const displayController = (function(){
             newTaskRow.classList.toggle('complete');
             _loadContent(currentBox);
             _loadArchiveContent(currentBox);
+        });
+        newTaskRow.addEventListener('click', () =>{
+            _showTask(task);
         })
 
         targetElement.appendChild(newTaskRow);
@@ -436,6 +438,7 @@ const displayController = (function(){
         const sortedTask = taskController.sortTaskWithDates();
         const taskToDisplay = sortedTask.filter(task => !task.isComplete);
         const allDates =[];
+        const tommorow = format(add(new Date(),{days: 1}),'yyyy-MM-dd')
         taskToDisplay.forEach(task => {
             if(!allDates.includes(task.getDueDate())){
                 allDates.push(task.getDueDate());
@@ -445,7 +448,14 @@ const displayController = (function(){
                     newDateElement.classList.add('overdue');
                 }
                 newDateElement.setAttribute('data-date', task.getDueDate());
-                newDateElement.textContent = _formatDate(task.getDueDate());
+                
+                if(taskController.isToday(task.getDueDate())){
+                    newDateElement.textContent = 'Today'
+                }else if(task.getDueDate() === tommorow){
+                    newDateElement.textContent = 'Tommorow'
+                }else{
+                    newDateElement.textContent = _formatDate(task.getDueDate());
+                }
                 targetElement.appendChild(newDateElement);
             }
         })
@@ -544,7 +554,10 @@ const displayController = (function(){
             }
             newTaskRow.classList.toggle('complete');
             _loadContent(currentBox);
-        })
+        });
+        newTaskRow.addEventListener('click', () =>{
+            _showTask(task);
+        });
 
         targetElement.appendChild(newTaskRow);
         newTaskRow.appendChild(newCheckBox);
@@ -553,6 +566,46 @@ const displayController = (function(){
         newTaskRow.appendChild(newIcon);
         newInfoContainer.appendChild(newTitle);
         newInfoContainer.appendChild(newDescription);
+    }
+    function _showTask(task){
+        const taskModal = document.querySelector('.view-task-modal-container');
+        taskModal.classList.add('show');
+        const titleElement = document.querySelector('#view-name');
+        const descriptionElement = document.querySelector('#view-description');
+        const dueDateElement = document.querySelector('#view-due-date');
+        const priorityElement = document.querySelector('#view-priority');
+        const projectElement = document.querySelector('#view-project')
+
+        titleElement.textContent = task.getTitle();
+        descriptionElement.textContent = task.getDescription();
+        dueDateElement.textContent = (task.getDueDate() === '')? 'No date': _formatDate(task.getDueDate());
+        projectElement.textContent = (task.getProject() === 'default')? 'Default': task.getProject();
+
+        switch (task.getPriority()){
+            case '0':
+                priorityElement.textContent = 'None';
+                priorityElement.setAttribute('class', 'vp0');
+                break;
+            case '1':
+                priorityElement.textContent = 'Low';
+                priorityElement.setAttribute('class', 'vp1');
+                break;
+            case '2':
+                priorityElement.textContent = 'Medium';
+                priorityElement.setAttribute('class', 'vp2');
+                break;
+            case '3':
+                priorityElement.textContent = 'High';
+                priorityElement.setAttribute('class', 'vp3');
+        }
+
+    }
+    function _setUpCloseShowTask(){
+        const closeBtn = document.querySelector('#close-view-task');
+        closeBtn.addEventListener('click', () =>{
+            const taskModal = document.querySelector('.view-task-modal-container');
+            taskModal.classList.remove('show');
+        })
     }
     return {initialise}
 })();
