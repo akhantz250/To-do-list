@@ -106,6 +106,7 @@
     padding: 16px;
     font-weight: 600;
     user-select: none;
+    margin-bottom: 2rem;
 }
 
 .task-form, .edit-task-form{
@@ -418,4 +419,8 @@
 
 div.show-warning{
     visibility: visible;
+}
+
+#hide-task{
+    display: none;
 }

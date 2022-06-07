@@ -72,7 +72,6 @@ const displayController = (function(){
                     <div class="form-row"><input type="text" id="title" name="title" placeholder="Task name"></div>
                     <div class="form-row"><textarea name="description" id="description" placeholder="Description" rows="5"></textarea></div>
                     <div class="form-row" id="final-row">
-                        <label for="due-date">Due Date: <input type="date" name="due-date" id="due-date"></label>
                         <label for="priority">Priority: 
                             <select name="priority" id="priority">
                                 <option value="0" selected> - </option>
@@ -81,6 +80,7 @@ const displayController = (function(){
                                 <option value="3">High</option>
                             </select>
                         </label>
+                        <label for="due-date">Due Date: <input type="date" name="due-date" id="due-date"></label>
                         <div class="btn-container"><button id="cancel" type="button">Cancel</button>
                             <button id="create-task" type="submit" disabled>Add task</button></div>
                     </div>
@@ -98,6 +98,11 @@ const displayController = (function(){
                 addTaskBtn.setAttribute('disabled','');
             } 
         });
+        const dateInput = document.querySelector('#due-date');
+        if(currentBox === 'Today'){
+            dateInput.setAttribute('readonly','');
+            dateInput.value = taskController.getTodayDate();
+        }
         cancelBtn.addEventListener('click',() => _setUpAddTask());
         addTaskBtn.addEventListener('click',(e) => {
             e.preventDefault();
@@ -188,6 +193,7 @@ const displayController = (function(){
             newIcon.addEventListener('click', (e)=> {
                 e.stopPropagation();
                 _setUpAddTask();
+                _closeEditTaskForm();
                 _setUpEditTaskForm(newTaskRow,targetElement, task);
             });
         }else{ //complete task event listeners
@@ -222,13 +228,13 @@ const displayController = (function(){
     function _setUpEditTaskForm(taskRow, targetElement, task){
         const formContainerElement = document.createElement('div');
         formContainerElement.classList.add('edit-form-container');
+        formContainerElement.setAttribute('data-task-ID',task.getTaskID());
         formContainerElement.innerHTML = `
         <div class="edit-task-form">
                 <form id="edit-task" action="#" method="post" autocomplete="off">
                     <div class="form-row"><input type="text" id="title" name="title" placeholder="Task name"></div>
                     <div class="form-row"><textarea name="description" id="description" placeholder="Description" rows="5"></textarea></div>
                     <div class="form-row" id="final-row">
-                        <label for="due-date">Due Date: <input type="date" name="due-date" id="due-date"></label>
                         <label for="priority">Priority: 
                             <select name="priority" id="priority">
                                 <option value="0" selected> - </option>
@@ -237,6 +243,7 @@ const displayController = (function(){
                                 <option value="3">High</option>
                             </select>
                         </label>
+                        <label for="due-date">Due Date: <input type="date" name="due-date" id="due-date"></label>
                         <div class="btn-container"><button id="edit-cancel" type="button">Cancel</button>
                             <button id="edit-task-btn" type="submit">Edit task</button></div>
                     </div>
@@ -244,7 +251,8 @@ const displayController = (function(){
             </div>
         `
         targetElement.insertBefore(formContainerElement,taskRow);
-        targetElement.removeChild(taskRow);
+        // targetElement.removeChild(taskRow);
+        taskRow.setAttribute('id','hide-task');
 
         const form = document.querySelector('#edit-task')
 
@@ -411,6 +419,17 @@ const displayController = (function(){
         const preDate = new Date(year, monthIndex,day);
         
         return format(preDate, 'do MMM yyyy');
+    }
+    function _closeEditTaskForm(task){
+        const formContainer = document.querySelector('.edit-form-container');
+        if(formContainer === null){
+            return
+        }else{
+            const target = document.querySelector('.task-target');
+            target.removeChild(formContainer);
+            const hiddenElement = document.querySelector('#hide-task');
+            hiddenElement.removeAttribute('id');
+        }
     }
     return {initialise}
 })();

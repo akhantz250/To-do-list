@@ -62,7 +62,7 @@ const taskController = (function(){
         }
     }
     function isToday(date){
-        const today =  format(new Date(), 'yyyy-MM-dd');
+        const today =  getTodayDate();
         if(date === today){
             return true;
         }else return false;
@@ -71,8 +71,12 @@ const taskController = (function(){
         const todayTask = allTasks.filter(task => isToday(task.getDueDate()));
         return todayTask;
     }
+    function getTodayDate(){
+        const today =  format(new Date(), 'yyyy-MM-dd');
+        return today; 
+    }
     return{createTask, removeTask,editTask, allTasks, allProjects, 
-        createProject, removeProject, getTasksByProject, checkProjectDuplicate, isToday, getTodayTask};
+        createProject, removeProject, getTasksByProject, checkProjectDuplicate, isToday, getTodayTask, getTodayDate};
 })()
 
 export {taskController};
