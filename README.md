@@ -1,6 +1,8 @@
-# odin-to-do-list
+# To-do-list
 
-Todo list app inspired by the Todoist website. Here is my [Live Demo](https://akhantz250.github.io/odin-to-do-list/)
+Todo list app inspired by the Todoist website. Here is my [Live Demo](https://akhantz250.github.io/To-do-list/)
+
+This project is an assignment from the [Odin Project](https://www.theodinproject.com/lessons/node-path-javascript-todo-list) curriculum.
 
 ### Features
 
@@ -34,3 +36,7 @@ This project was a good exercise to practice object oriented design principles a
 - Factory functions and module pattern.
 
 Obviously I still need more practice to write more organized code.
+
+### Screenshot
+
+![This is a alt text.](https://raw.githubusercontent.com/akhantz250/To-do-list/main/To-do-list.png 'Screenshot')
