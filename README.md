@@ -1,6 +1,6 @@
 # To-do List
 
-Todo list app inspired by the Todoist website. Here is my [Live Demo](https://akhantz250.github.io/To-do-list/)
+Todo list app inspired by the Todoist website. [See live demo.](https://akhantz250.github.io/To-do-list/)
 
 This project is an assignment from the [Odin Project](https://www.theodinproject.com/lessons/node-path-javascript-todo-list) curriculum.
 
