@@ -1,4 +1,4 @@
-# To-do-list
+# To-do List
 
 Todo list app inspired by the Todoist website. Here is my [Live Demo](https://akhantz250.github.io/To-do-list/)
 
