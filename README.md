@@ -35,7 +35,7 @@ This project was a good exercise to practice object oriented design principles a
 - Single responsiblility, loosely-coupled objects and open-closed principles.
 - Factory functions and module pattern.
 
-Obviously I still need more practice to write more organized code.
+Still, I need more practice to write more organized code.
 
 ### Screenshot
 
